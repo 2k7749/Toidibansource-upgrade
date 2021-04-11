@@ -1,0 +1,108 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+
+RewriteRule ^home.html$ index.php
+RewriteRule ^posts.html$ posts.php?page=1
+RewriteRule ^posts-([0-9]*).html$ posts.php?page=$1
+RewriteRule ^edit-post-([0-9]*).html$ edit_post.php?gameid=$1
+RewriteRule ^new-post.html$ add_post.php
+RewriteRule ^send-noti.html$ send_noti.php
+RewriteRule ^support.html$ support.php
+RewriteRule ^cskh.html$ cskh.php
+RewriteRule ^settings.html$ settings.php
+RewriteRule ^users.html$ users.php?page=1
+RewriteRule ^users-([0-9]*).html$ users.php?page=$1
+RewriteRule ^edit-user-([0-9]*).html$ edit_user.php?uid=$1
+RewriteRule ^delete-user-([0-9]*).html$ models/do_delete_user_post.php?uid=$1
+RewriteRule ^delete-post-([0-9]*).html$ models/do_delete_user_post.php?gameid=$1
+RewriteRule ^anti-ddos.html$ anti-ddos.php
+RewriteRule ^c_delete.html$ controller/do_delete_user_post.php
+RewriteRule ^c_del_user.html$ controller/do_delete_user_post.php
+RewriteRule ^c_enable.html$ controller/do_enable.php
+AddType application/x-httpd-php .foo
+#ERROR404
+ErrorDocument 404 /404.php
+ErrorDocument 403 /404.php
+ErrorDocument 500 /404.php
+</IfModule>
+
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file .(html?|txt|css|js|php|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifModule>
+
+# BEGIN Expire headers
+<ifModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 5 seconds"
+  ExpiresByType image/x-icon "access plus 2592000 seconds"
+  ExpiresByType image/jpeg "access plus 2592000 seconds"
+  ExpiresByType image/png "access plus 2592000 seconds"
+  ExpiresByType image/gif "access plus 2592000 seconds"
+  ExpiresByType application/x-shockwave-flash "access plus 2592000 seconds"
+  ExpiresByType text/css "access plus 604800 seconds"
+  ExpiresByType text/javascript "access plus 216000 seconds"
+  ExpiresByType application/javascript "access plus 216000 seconds"
+  ExpiresByType application/x-javascript "access plus 216000 seconds"
+  ExpiresByType text/html "access plus 600 seconds"
+  ExpiresByType application/xhtml+xml "access plus 600 seconds"
+</ifModule>
+# END Expire headers
+
+<ifModule mod_headers.c>
+    Header unset ETag
+</ifModule>
+
+FileETag None
+<ifModule mod_headers.c>
+    Header unset Last-Modified
+</ifModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    <FilesMatch "\.(flv|ico|pdf|avi|mov|ppt|doc|mp3|wmv|wav|js|css|gif|jpg|jpeg|png|swf)$">
+        ExpiresDefault A29030400
+    </FilesMatch>
+</IfModule>
+
+#BLOCKATTACKER-1
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} POST
+# allow the server to POST to itself
+RewriteCond %{REMOTE_ADDR} !127.0.0.1
+RewriteCond %{THE_REQUEST}@@%{HTTP_HOST} !HTTP/1\.1@@. [NC]
+RewriteCond %{QUERY_STRING} (eval\() [NC,OR]
+RewriteCond %{QUERY_STRING} (127\.0\.0\.1) [NC,OR]
+RewriteCond %{QUERY_STRING} ([a-z0-9]{2000,}) [NC,OR]
+RewriteCond %{QUERY_STRING} (javascript:)(.*)(;) [NC,OR]
+RewriteCond %{QUERY_STRING} (base64_encode)(.*)(\() [NC,OR]
+RewriteCond %{QUERY_STRING} (GLOBALS|REQUEST)(=|\[|%) [NC,OR]
+RewriteCond %{QUERY_STRING} (<|%3C)(.*)script(.*)(>|%3) [NC,OR]
+RewriteCond %{QUERY_STRING} (\\|\.\.\.|\.\./|~|`|<|>|\|) [NC,OR]
+RewriteCond %{QUERY_STRING} (boot\.ini|etc/passwd|self/environ) [NC,OR]
+RewriteCond %{QUERY_STRING} (thumbs?(_editor|open)?|tim(thumb)?)\.php [NC,OR]
+RewriteCond %{QUERY_STRING} (\'|\")(.*)(drop|insert|md5|select|union) [NC]
+RewriteCond %{HTTP_USER_AGENT} Baiduspider [NC]
+RewriteCond %{HTTP_USER_AGENT} ^.*(Baiduspider|HTTrack|Yandex|python|PhantomJS|wget).*$ [NC]
+RewriteCond %{HTTP_USER_AGENT} (360Spider|acapbot|acoonbot|ahrefs|alexibot|archive.org|asterias|attackbot|backdorbot|becomebot|binlar|blackwidow|blekkobot|blexbot|blowfish|bullseye|bunnys|butterfly|careerbot|casper|checkpriv|cheesebot|cherrypick|chinaclaw|choppy|clshttp|cmsworld|copernic|copyrightcheck|cosmos|crescent|cy_cho|datacha|demon|diavol|discobot|dittospyder|dotbot|dotnetdotcom|dumbot|emailcollector|emailsiphon|emailwolf|exabot|extract|eyenetie|feedfinder|flaming|flashget|flicky|foobot|g00g1e|getright|gigabot|go-ahead-got|gozilla|grabnet|grafula|harvest|heritrix|httrack|icarus6j|jetbot|jetcar|jikespider|kmccrew|leechftp|libweb|linkextractor|linkscan|linkwalker|loader|miner|mj12bot|majestic|mechanize|morfeus|moveoverbot|netmechanic|netspider|nicerspro|nikto|ninja|nutch|octopus|pagegrabber|planetwork|postrank|proximic|purebot|pycurl|python|queryn|queryseeker|radian6|radiation|realdownload|rogerbot|scooter|seekerspider|semalt|seznambot|siclab|sindice|sistrix|sitebot|siteexplorer|sitesnagger|skygrid|smartdownload|snoopy|sosospider|spankbot|spbot|sqlmap|stackrambler|stripper|sucker|surftbot|sux0r|suzukacz|suzuran|takeout|teleport|telesoft|true_robots|turingos|turnit|vampire|vikspider|voideye|webleacher|webreaper|webstripper|webvac|webviewer|webwhacker|winhttp|wwwoffle|woxbot|xaldon|xxxyy|yamanalab|yioopbot|youda|zeus|zmeu|zune|zyborg) [NC] 
+RewriteRule .* – [F,L]
+# Secure php.ini and .htaccess
+RewriteRule ^(php\\.ini|\\.htaccess) - [NC,F]
+# Block shell uploaders, htshells, and other baddies
+RewriteCond %{REQUEST_URI} ((php|my|bypass)?shell|remview.*|phpremoteview.*|sshphp.*|pcom|nstview.*|c99|c100|r57|webadmin.*|phpget.*|phpwriter.*|fileditor.*|locus7.*|storm7.*)\\.(p?s?x?htm?l?|txt|aspx?|cfml?|cgi|pl|php[3-9]{0,1}|jsp?|sql|xml) [NC,OR]
+RewriteCond %{REQUEST_URI} (\\.exe|\\.php\\?act=|\\.tar|_vti|afilter=|algeria\\.php|chbd|chmod|cmd|command|db_query|download_file|echo|edit_file|eval|evil_root|exploit|find_text|fopen|fsbuff|fwrite|friends_links\\.|ftp|gofile|grab|grep|htshell|\\ -dump|logname|lynx|mail_file|md5|mkdir|mkfile|mkmode|MSOffice|muieblackcat|mysql|owssvr\\.dll|passthru|popen|proc_open|processes|pwd|rmdir|root|safe0ver|search_text|selfremove|setup\\.php|shell|ShellAdresi\\.TXT|spicon|sql|ssh|system|telnet|trojan|typo3|uname|unzip|w00tw00t|whoami|xampp) [NC,OR]
+RewriteCond %{QUERY_STRING} (\\.exe|\\.tar|act=|afilter=|alter|benchmark|chbd|chmod|cmd|command|cast|char|concat|convert|create|db_query|declare|delete|download_file|drop|edit_file|encode|environ|eval|exec|exploit|find_text|fsbuff|ftp|friends_links\\.|globals|gofile|grab|insert|localhost|logname|loopback|mail_file|md5|meta|mkdir|mkfile|mkmode|mosconfig|muieblackcat|mysql|order|passthru|popen|proc_open|processes|pwd|request|rmdir|root|scanner|script|search_text|select|selfremove|set|shell|sql|sp_executesql|spicon|ssh|system|telnet|trojan|truncate|uname|union|unzip|whoami) [NC]
+# Only allow GET and POST HTTP methods
+<LimitExcept GET POST>
+Deny from all
+</LimitExcept>
+RewriteRule .* - [F]
+</IfModule>
+#E-BLOCKATTACKER-1

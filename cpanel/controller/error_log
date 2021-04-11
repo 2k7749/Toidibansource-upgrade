@@ -1,0 +1,2 @@
+[20-Dec-2019 03:25:16 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/bin0812/toidibansource.com/cpanel/controller/do_delete_user_post.php:1) in /home/bin0812/toidibansource.com/libraries/class.database.php on line 2
+[20-Dec-2019 03:25:16 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/bin0812/toidibansource.com/cpanel/controller/do_delete_user_post.php:1) in /home/bin0812/toidibansource.com/libraries/class.database.php on line 3

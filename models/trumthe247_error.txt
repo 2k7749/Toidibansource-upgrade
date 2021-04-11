@@ -1,0 +1,4 @@
+12:22:06 20/12/2019 - {"status":-1000,"desc":"<p>Bạn cần nhập vào API Key.<\/p>\n<p>Bạn cần nhập vào API Secret.<\/p>\n"}
+13:26:10 20/12/2019 - null
+22:50:01 07/04/2021 - {"status":-1008,"desc":"Seri thẻ không đúng!","post_data":{"card":"VMS","amount":"10000","serial":"123131","pin":"312313213","api_key":"235d2e8092d7ec5afbf7fe285113d55d","api_secret":"51ec073c68fe9d3e130e137f6652e63e"}}
+22:50:14 07/04/2021 - {"status":-1008,"desc":"Seri thẻ không đúng!","post_data":{"card":"VTT","amount":"10000","serial":"123123","pin":"12323123","api_key":"235d2e8092d7ec5afbf7fe285113d55d","api_secret":"51ec073c68fe9d3e130e137f6652e63e"}}

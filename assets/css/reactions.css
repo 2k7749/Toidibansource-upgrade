@@ -1,0 +1,123 @@
+
+.text-desc, [class*="reaction-"], .field-reactions, .field-reactions:checked:focus ~ .text-desc {
+  clip: rect(1px, 1px, 1px, 1px);
+  overflow: hidden;
+  position: absolute;
+}
+
+.field-reactions:focus ~ .text-desc, .box [class*="reaction-"], .field-reactions:checked ~ [class*="reaction-"] {
+  clip: auto;
+  overflow: visible;
+  opacity: 1; 
+}
+
+[class*="reaction-"] {
+  border: none;
+  background-image: url(../img/facebook-reactions.gif);
+  background-color: transparent;
+  display: block;
+  display: inline-block;
+  cursor: pointer;
+  height: 48px;
+  position: absolute;
+  width: 48px;
+  z-index: 11;
+  top: -28;
+  transform-origin: 50% 100%;
+  transform: scale(0.1);
+  transition: all .3s;
+  outline: none;
+  will-change: transform;
+  opacity: 0; }
+
+
+.toolbox {
+  background: #fff;
+  height: 80px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 40px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .15s; }
+
+.legend-reaction {
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+  box-sizing: border-box;
+  color: #fff;
+  display: inline-block;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  line-height: 20px;
+  max-width: 100%;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0 6px;
+  transition: opacity 50ms ease;
+  left: 50%;
+  position: absolute;
+  text-align: center;
+  top: -28px;
+  transform: translateX(-50%); }
+
+.box [class*="reaction-"] {
+  transform: scale(0.8) translateY(-40px); }
+  .box [class*="reaction-"], .box [class*="reaction-"]:focus {
+    transition: all .2s ease-in;
+    transform: scale(1) translateY(-35px); }
+    .box [class*="reaction-"]:hover .legend-reaction, .box:hover [class*="reaction-"]:focus .legend-reaction {
+      opacity: 1; }
+
+.box .toolbox {
+  opacity: 1; }
+
+.box .toolbox {
+  visibility: visible; }
+
+.box .reaction-love {
+  transition-delay: .03s; }
+
+.box .reaction-haha {
+  transition-delay: .09s; }
+
+.box .reaction-wow {
+  transition-delay: .12s; }
+
+.box .reaction-sad {
+  transition-delay: .15s; }
+
+.box .reaction-angry {
+  transition-delay: .18s; }
+
+.field-reactions:checked ~ [class*="reaction-"] {
+  transform: scale(0.8) translateY(-40px); }
+  .field-reactions:checked ~ [class*="reaction-"]:hover, .field-reactions:checked ~ [class*="reaction-"]:focus {
+    transition: all .2s ease-in;
+    transform: scale(1) translateY(-35px); }
+    .field-reactions:checked ~ [class*="reaction-"]:hover .legend-reaction, .field-reactions:checked ~ [class*="reaction-"]:focus .legend-reaction {
+      opacity: 1; }
+
+.reaction-like {
+  left: 80px;
+  background-position: 0 -144px; }
+
+.reaction-love {
+  background-position: -48px 0;
+  left: 130px; }
+
+.reaction-haha {
+  background-position: -96px 0;
+  left: 180px; }
+
+.reaction-wow {
+  background-position: -144px 0;
+  left: 230px; }
+
+.reaction-sad {
+  background-position: -192px 0;
+  left: 280px; }
+
+.reaction-angry {
+  background-position: -240px 0;
+  left: 330px; }

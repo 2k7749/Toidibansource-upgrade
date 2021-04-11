@@ -1,0 +1,127 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^home.html$ /index.php [NC,QSA]
+RewriteRule ^source/codenum-([0-9]*).html products.php?code=$1 [NC,QSA]
+RewriteRule ^game-page([0-9]*).html index.php?page=$1 [NC,QSA]
+RewriteRule ^search-([^/]+)/?$.html index.php?find=$1 [QSA,NC,L]
+RewriteRule ^([a-z0-9/-]+)-page([0-9]*).html$ categories.php?cname=$1&page=$2 [NC,L,QSA]
+RewriteRule ^404.html$ 404.php [NC,QSA]
+RewriteRule ^settings.html$ settings.php [NC,QSA]
+RewriteRule ^account-view([0-9]*).html$ account.php?page=$1 [NC,QSA]
+RewriteRule ^signin.html$ signin.php [NC,QSA]
+RewriteRule ^signup.html$ signup.php [NC,QSA]
+RewriteRule ^forgot-pass.html$ forgot_pass.php [NC,QSA]
+RewriteRule ^logout.html$ logout.php [NC,QSA]
+RewriteRule ^about.html$ about.php [NC,QSA]
+RewriteRule ^purchase-history.html$ purchase_log.php [NC,QSA]
+RewriteRule ^notification.html$ noti_log.php [NC,QSA]
+RewriteRule ^recharge-account.html$ recharge.php [NC,QSA]
+RewriteRule ^premium-pack.html$ premium_pack.php [NC,QSA]
+RewriteRule ^attention.html$ antiddos.php [NC,QSA]
+RewriteRule ^maintenance.html$ maintenance.php [NC,QSA]
+RewriteRule ^c_pay.html$ controller/do_buyit.php [NC,QSA]
+RewriteRule ^download.html$ download.php [NC,QSA]
+RewriteRule ^c_react.html$ controller/do_react.php [NC,QSA] 
+#CART
+RewriteRule ^mycart.html$ cart.php [NC,QSA]
+RewriteRule ^remove-item-([a-z0-9/-]+).html$ cart.php?action=empty&sku=$1 [NC,L,QSA]
+RewriteRule ^add-to-cart.html$ index.php?action=addcart [NC,L,QSA]
+RewriteRule ^invoice-paymentid([a-z0-9/-]+)-payer([a-z0-9/-]+)-token([a-z0-9/-]+)-pid([a-z0-9/-]+)-loadout([a-z0-9/-]+).html$ order_Detailpaypal.php?paymentID=$1&payerID=$2&token=$3&pid=$4&payload=$5 [NC,L,QSA]
+RewriteRule ^c_carts.html$ models/load_countitem.php [NC,QSA] 
+#Chỉ định server math nhưng kí tự tương tự nhau
+#gắn chuỗi truy vấn vào cuối cùng của URL
+RewriteRule ^c_settings.html$ controller/do_settings.php [NC,QSA]
+RewriteRule ^c_pay_pre.html$ controller/do_premiumpack.php [NC,QSA]
+RewriteRule ^c_fe_noti.html$ controller/fetch_noti.php [NC,QSA]
+RewriteRule ^download-source([0-9]*).html$ download.php?vdownload=$1 [NC,QSA]
+AddType application/x-httpd-php .foo
+#ERROR404
+ErrorDocument 400 /404.php
+ErrorDocument 401 /404.php
+ErrorDocument 404 /404.php
+ErrorDocument 403 /404.php
+ErrorDocument 500 /404.php
+</IfModule>
+
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file .(html?|txt|css|js|php|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifModule>
+
+# BEGIN Expire headers
+<ifModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 5 seconds"
+  ExpiresByType image/x-icon "access plus 2592000 seconds"
+  ExpiresByType image/jpeg "access plus 2592000 seconds"
+  ExpiresByType image/png "access plus 2592000 seconds"
+  ExpiresByType image/gif "access plus 2592000 seconds"
+  ExpiresByType application/x-shockwave-flash "access plus 2592000 seconds"
+  ExpiresByType text/css "access plus 604800 seconds"
+  ExpiresByType text/javascript "access plus 216000 seconds"
+  ExpiresByType application/javascript "access plus 216000 seconds"
+  ExpiresByType application/x-javascript "access plus 216000 seconds"
+  ExpiresByType text/html "access plus 600 seconds"
+  ExpiresByType application/xhtml+xml "access plus 600 seconds"
+</ifModule>
+# END Expire headers
+
+<ifModule mod_headers.c>
+    Header unset ETag
+</ifModule>
+
+FileETag None
+<ifModule mod_headers.c>
+    Header unset Last-Modified
+</ifModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    <FilesMatch "\.(flv|ico|pdf|avi|mov|ppt|doc|mp3|wmv|wav|js|css|gif|jpg|jpeg|png|swf)$">
+        ExpiresDefault A29030400
+    </FilesMatch>
+</IfModule>
+
+#BLOCKATTACKER-1
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} POST
+# allow the server to POST to itself
+RewriteCond %{REMOTE_ADDR} !127.0.0.1
+RewriteCond %{THE_REQUEST}@@%{HTTP_HOST} !HTTP/1\.1@@. [NC]
+RewriteCond %{QUERY_STRING} (eval\() [NC,OR]
+RewriteCond %{QUERY_STRING} (127\.0\.0\.1) [NC,OR]
+RewriteCond %{QUERY_STRING} ([a-z0-9]{2000,}) [NC,OR]
+RewriteCond %{QUERY_STRING} (javascript:)(.*)(;) [NC,OR]
+RewriteCond %{QUERY_STRING} (base64_encode)(.*)(\() [NC,OR]
+RewriteCond %{QUERY_STRING} (GLOBALS|REQUEST)(=|\[|%) [NC,OR]
+RewriteCond %{QUERY_STRING} (<|%3C)(.*)script(.*)(>|%3) [NC,OR]
+RewriteCond %{QUERY_STRING} (\\|\.\.\.|\.\./|~|`|<|>|\|) [NC,OR]
+RewriteCond %{QUERY_STRING} (boot\.ini|etc/passwd|self/environ) [NC,OR]
+RewriteCond %{QUERY_STRING} (thumbs?(_editor|open)?|tim(thumb)?)\.php [NC,OR]
+RewriteCond %{QUERY_STRING} (\'|\")(.*)(drop|insert|md5|select|union) [NC]
+RewriteCond %{HTTP_USER_AGENT} Baiduspider [NC]
+RewriteCond %{HTTP_USER_AGENT} ^.*(Baiduspider|HTTrack|Yandex|python|PhantomJS|wget).*$ [NC]
+RewriteCond %{HTTP_USER_AGENT} (360Spider|acapbot|acoonbot|ahrefs|alexibot|archive.org|asterias|attackbot|backdorbot|becomebot|binlar|blackwidow|blekkobot|blexbot|blowfish|bullseye|bunnys|butterfly|careerbot|casper|checkpriv|cheesebot|cherrypick|chinaclaw|choppy|clshttp|cmsworld|copernic|copyrightcheck|cosmos|crescent|cy_cho|datacha|demon|diavol|discobot|dittospyder|dotbot|dotnetdotcom|dumbot|emailcollector|emailsiphon|emailwolf|exabot|extract|eyenetie|feedfinder|flaming|flashget|flicky|foobot|g00g1e|getright|gigabot|go-ahead-got|gozilla|grabnet|grafula|harvest|heritrix|httrack|icarus6j|jetbot|jetcar|jikespider|kmccrew|leechftp|libweb|linkextractor|linkscan|linkwalker|loader|miner|mj12bot|majestic|mechanize|morfeus|moveoverbot|netmechanic|netspider|nicerspro|nikto|ninja|nutch|octopus|pagegrabber|planetwork|postrank|proximic|purebot|pycurl|python|queryn|queryseeker|radian6|radiation|realdownload|rogerbot|scooter|seekerspider|semalt|seznambot|siclab|sindice|sistrix|sitebot|siteexplorer|sitesnagger|skygrid|smartdownload|snoopy|sosospider|spankbot|spbot|sqlmap|stackrambler|stripper|sucker|surftbot|sux0r|suzukacz|suzuran|takeout|teleport|telesoft|true_robots|turingos|turnit|vampire|vikspider|voideye|webleacher|webreaper|webstripper|webvac|webviewer|webwhacker|winhttp|wwwoffle|woxbot|xaldon|xxxyy|yamanalab|yioopbot|youda|zeus|zmeu|zune|zyborg) [NC] 
+RewriteRule .* – [F,L]
+# Secure php.ini and .htaccess
+RewriteRule ^(php\\.ini|\\.htaccess) - [NC,F]
+# Block shell uploaders, htshells, and other baddies
+RewriteCond %{REQUEST_URI} ((php|my|bypass)?shell|remview.*|phpremoteview.*|sshphp.*|pcom|nstview.*|c99|c100|r57|webadmin.*|phpget.*|phpwriter.*|fileditor.*|locus7.*|storm7.*)\\.(p?s?x?htm?l?|txt|aspx?|cfml?|cgi|pl|php[3-9]{0,1}|jsp?|sql|xml) [NC,OR]
+RewriteCond %{REQUEST_URI} (\\.exe|\\.php\\?act=|\\.tar|_vti|afilter=|algeria\\.php|chbd|chmod|cmd|command|db_query|download_file|echo|edit_file|eval|evil_root|exploit|find_text|fopen|fsbuff|fwrite|friends_links\\.|ftp|gofile|grab|grep|htshell|\\ -dump|logname|lynx|mail_file|md5|mkdir|mkfile|mkmode|MSOffice|muieblackcat|mysql|owssvr\\.dll|passthru|popen|proc_open|processes|pwd|rmdir|root|safe0ver|search_text|selfremove|setup\\.php|shell|ShellAdresi\\.TXT|spicon|sql|ssh|system|telnet|trojan|typo3|uname|unzip|w00tw00t|whoami|xampp) [NC,OR]
+RewriteCond %{QUERY_STRING} (\\.exe|\\.tar|act=|afilter=|alter|benchmark|chbd|chmod|cmd|command|cast|char|concat|convert|create|db_query|declare|delete|download_file|drop|edit_file|encode|environ|eval|exec|exploit|find_text|fsbuff|ftp|friends_links\\.|globals|gofile|grab|insert|localhost|logname|loopback|mail_file|md5|meta|mkdir|mkfile|mkmode|mosconfig|muieblackcat|mysql|order|passthru|popen|proc_open|processes|pwd|request|rmdir|root|scanner|script|search_text|select|selfremove|set|shell|sql|sp_executesql|spicon|ssh|system|telnet|trojan|truncate|uname|union|unzip|whoami) [NC]
+# Only allow GET and POST HTTP methods
+<LimitExcept GET POST>
+Deny from all
+</LimitExcept>
+RewriteRule .* - [F]
+</IfModule>
+#E-BLOCKATTACKER-1
